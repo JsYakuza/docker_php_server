@@ -1,0 +1,45 @@
+version: "3.3"
+
+services:
+  php:
+    container_name: "php"
+    build:
+      context: ./php
+    volumes:
+      - ./src:/var/www/app
+    links:
+      - maria
+
+  nginx:
+    container_name: "nginx"
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./src:/var/www/app
+    links:
+      - php
+
+  maria:
+    container_name: "mariadb"
+    image: mariadb:10.3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: terminator
+      MYSQL_USER: root
+      MYSQL_PASSWORD: passwd
+      MARIADB_DATABASE: testdb
+    volumes:
+      - ./database:/var/lib/mysql
+
+  phpmyadmin:
+    container_name: "phpmyadmin"
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      - PMA_ARBITRARY=1
+    links:
+      - maria
