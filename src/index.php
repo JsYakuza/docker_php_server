@@ -1,1 +1,3 @@
-<h1>Start</h1>
+<?php
+echo '<pre>';
+var_dump($_SERVER);
